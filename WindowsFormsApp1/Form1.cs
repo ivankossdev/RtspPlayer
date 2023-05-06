@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Emgu.CV;
@@ -19,13 +20,16 @@ namespace Player
         public VideoForm()
         {
             InitializeComponent();
-            Hello();
+            new Thread(() => Hello()).Start();
+            // Hello();
         }
         private void Hello()
         {
             try
             {
-                capture = new VideoCapture("rtsp://Admin:admin321@192.168.1.5:554/h264");
+                // rtsp://Admin:1234@192.168.15.52:554/snl/live/1/1/bPvJ5dg=-HK2XuA==
+                // rtsp://Admin:admin321@192.168.1.5:554/h264
+                capture = new VideoCapture("rtsp://Admin:1234@192.168.0.157:554/snl/live/1/1/bPvJ5dg=-HK2XuA==");
                 capture.ImageGrabbed += CurrentDevice_ImageGrabbed;
                 capture.SetCaptureProperty(CapProp.Fps, 0);
                 capture.Start();
@@ -40,6 +44,7 @@ namespace Player
         {
             try
             {
+                Console.WriteLine(this.Size);
                 Mat m = new Mat(this.Size, DepthType.Cv8U, 3);
                 capture.Retrieve(m, 0);
                 pictureBox1.Image = BitmapExtension.ToBitmap(m);
